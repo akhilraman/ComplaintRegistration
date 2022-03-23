@@ -58,7 +58,7 @@ public class CustomRow extends ArrayAdapter<Complaint> {
         assert currentNumberPosition != null;
 
         row_title.setText(currentNumberPosition.getTitle());
-        row_username.setText(currentNumberPosition.getName());
+        row_username.setText(currentNumberPosition.getComplaintFrom().getName());
         row_regno.setText(currentNumberPosition.getRegno());
         row_status.setText(currentNumberPosition.getStatus());
 

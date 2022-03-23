@@ -12,6 +12,8 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -31,6 +33,10 @@ public class RegistrationActivity extends AppCompatActivity {
 
     ArrayList<Expert> expertList;
 
+    User user;
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +49,8 @@ public class RegistrationActivity extends AppCompatActivity {
         EditText name=findViewById(R.id.name);
 
         EditText incident_info=findViewById(R.id.name1);
+
+
 
         expertList= new ArrayList<>();
 
@@ -77,8 +85,36 @@ public class RegistrationActivity extends AppCompatActivity {
                         int x=random.nextInt(expertList.size());
 
                         String uniqueID = UUID.randomUUID().toString();
-                        Complaint c= new Complaint(uniqueID,titleValue,nameValue,regnoValue,incidentInfoValue,"akhil","registered",expertList.get(x));
-                        reference.child(uniqueID).setValue(c);
+
+                        referenceExpert = rootNode.getReference("Users");
+
+                        referenceExpert.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                                for(DataSnapshot dataSnapshot:snapshot.getChildren()){
+                                    user=dataSnapshot.getValue(User.class);
+
+                                    String u_email=user.getEmail();
+                                    String check_email=FirebaseAuth.getInstance().getCurrentUser().getEmail();
+                                    Log.i("this",u_email);
+                                    Log.i("2nd",check_email);
+                                    if(u_email.equals(check_email)){
+                                        Log.i("checker",check_email);
+                                        Complaint c= new Complaint(uniqueID,titleValue,nameValue,regnoValue,incidentInfoValue,user,"registered",expertList.get(x));
+                                        reference.child(uniqueID).setValue(c);
+                                    }
+                                }
+                                Log.i("final",user.getName());
+
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+
 
                     }
 
@@ -89,6 +125,7 @@ public class RegistrationActivity extends AppCompatActivity {
                 });
                 HomeFragment.arrayList.clear();
                 HomeFragment.adapter.notifyDataSetChanged();
+                finish();
 
             }
         });

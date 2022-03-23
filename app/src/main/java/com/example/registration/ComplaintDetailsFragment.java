@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,8 @@ import android.widget.TextView;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Locale;
 
@@ -79,6 +82,8 @@ public class ComplaintDetailsFragment extends BottomSheetDialogFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        FirebaseAuth mAuth;
+        mAuth = FirebaseAuth.getInstance();
 
         TextView title=view.findViewById(R.id.details_title);
         title.setText(present.getTitle());
@@ -93,13 +98,17 @@ public class ComplaintDetailsFragment extends BottomSheetDialogFragment {
         incident.setText(present.getIncident_info());
 
         TextView ComplaintFrom=view.findViewById(R.id.complaintFrom);
-        ComplaintFrom.setText(present.getComplaintFrom());
+        ComplaintFrom.setText(present.getComplaintFrom().getName());
 
         TextView status=view.findViewById(R.id.details_status);
         status.setText(present.getStatus().toUpperCase(Locale.ROOT));
 
         TextView expert=view.findViewById(R.id.details_expert);
         expert.setText("Complaint handled by "+present.getExpert().getName());
+
+
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        Log.i("this",currentUser.getDisplayName());
 
         //HomeFragment.arrayList.clear();
         //HomeFragment.adapter.notifyDataSetChanged();

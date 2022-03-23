@@ -4,9 +4,11 @@ public class Complaint {
 
     String complaintID,title,name,regno,incident_info,status;
 
-    String complaintFrom="akhil";
+    //String complaintFrom="akhil";
 
     Expert expert;
+
+    User complaintFrom;
 
 
     Complaint(){
@@ -14,7 +16,7 @@ public class Complaint {
     }
 
 
-    Complaint(String id,String t,String n,String reg,String inc,String comp_from,String stat,Expert exp){
+    Complaint(String id,String t,String n,String reg,String inc,User comp_from,String stat,Expert exp){
 
         complaintID=id;
         title=t;
@@ -29,7 +31,7 @@ public class Complaint {
 
     }
 
-    public String getComplaintFrom() {
+    public User  getComplaintFrom() {
         return complaintFrom;
     }
 
@@ -53,7 +55,7 @@ public class Complaint {
         return title;
     }
 
-    public void setComplaintFrom(String complaintFrom) {
+    public void setComplaintFrom(User complaintFrom) {
         this.complaintFrom = complaintFrom;
     }
 

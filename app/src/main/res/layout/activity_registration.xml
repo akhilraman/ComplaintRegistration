@@ -118,7 +118,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
-            android:text="Button" />
+            android:text="Submit" />
 
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:gravity="center"
+        android:text="REGISTER COMPLAINT"
+        android:textSize="24sp" />
 </RelativeLayout>

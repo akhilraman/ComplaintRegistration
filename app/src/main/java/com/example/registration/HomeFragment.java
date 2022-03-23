@@ -19,6 +19,8 @@ import androidx.fragment.app.FragmentActivity;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -35,6 +37,7 @@ public class HomeFragment extends Fragment {
     DatabaseReference reference;
     public static CustomRow adapter;
     public static ArrayList adapterData;
+
 
     DatabaseReference referenceExpert;
 
@@ -57,6 +60,7 @@ public class HomeFragment extends Fragment {
         rootNode = FirebaseDatabase.getInstance();
         reference = rootNode.getReference("Complaints");
 
+
         FloatingActionButton registerButton=view.findViewById(R.id.registerButton);
 
         registerButton.setOnClickListener(new View.OnClickListener() {
@@ -68,7 +72,6 @@ public class HomeFragment extends Fragment {
         });
 
         listview=view.findViewById(R.id.list);
-
         listview.setItemsCanFocus(false);
         arrayList = new ArrayList<Complaint>();
         adapterData = new ArrayList<Complaint>();
@@ -84,11 +87,15 @@ public class HomeFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for(DataSnapshot dataSnapshot:snapshot.getChildren()){
                     Complaint complaint=dataSnapshot.getValue(Complaint.class);
+                    if(complaint.getComplaintFrom().getEmail().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())){
+                        arrayList.add(complaint);
+                    }
 
-                            arrayList.add(complaint);
-                            adapter.notifyDataSetChanged();
-                            listview.requestLayout();
+                    adapter.notifyDataSetChanged();
+                    listview.requestLayout();
+
                 }
+
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {

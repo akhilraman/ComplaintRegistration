@@ -5,8 +5,10 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -35,6 +37,8 @@ public class MainPage extends AppCompatActivity {
         VPAdapter vpAdapter= new VPAdapter(getSupportFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         vpAdapter.addFragment(new HomeFragment(),"Complaints");
         vpAdapter.addFragment(new ChatFragment(),"chat");
+
+        //Log.i("this", FirebaseAuth.getInstance().getCurrentUser().to);
 
         viewPager.setAdapter(vpAdapter);
     }
