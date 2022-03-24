@@ -58,9 +58,11 @@ public class CustomRow extends ArrayAdapter<Complaint> {
         assert currentNumberPosition != null;
 
         row_title.setText(currentNumberPosition.getTitle());
-        row_username.setText(currentNumberPosition.getComplaintFrom().getName());
+        row_username.setText(currentNumberPosition.getName());
         row_regno.setText(currentNumberPosition.getRegno());
-        row_status.setText(currentNumberPosition.getStatus());
+        String status_value=currentNumberPosition.getStatus();
+        String final_status=status_value.replaceAll(" ","\n");
+        row_status.setText(final_status);
 
 
         ImageButton transact_button=currentItemView.findViewById(R.id.row_chat);
@@ -69,7 +71,7 @@ public class CustomRow extends ArrayAdapter<Complaint> {
         transact_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(), "hello", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "implementation pending", Toast.LENGTH_SHORT).show();
             }
         });
 

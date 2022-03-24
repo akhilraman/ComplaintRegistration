@@ -7,9 +7,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -38,6 +41,10 @@ public class HomeFragment extends Fragment {
     public static CustomRow adapter;
     public static ArrayList adapterData;
 
+    FloatingActionButton mainbutton,registerbutton,logoutbutton;
+    Animation fabOpen,fabClose,rotateForward,rotateBackward;
+    boolean isOpen=false;
+
 
     DatabaseReference referenceExpert;
 
@@ -55,19 +62,42 @@ public class HomeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-
+        final ProgressBar simpleProgressBar = (ProgressBar) view.findViewById(R.id.progressBar);
 
         rootNode = FirebaseDatabase.getInstance();
         reference = rootNode.getReference("Complaints");
 
+        mainbutton=(FloatingActionButton) view.findViewById(R.id.floatingActionButton);
+        registerbutton=(FloatingActionButton) view.findViewById(R.id.registerbutton);
+        logoutbutton=(FloatingActionButton) view.findViewById(R.id.logout_button);
 
-        FloatingActionButton registerButton=view.findViewById(R.id.registerButton);
+        fabOpen= AnimationUtils.loadAnimation(getContext(),R.anim.from_buttom_anim);
+        fabClose= AnimationUtils.loadAnimation(getContext(),R.anim.to_buttom_anim);
+        rotateForward= AnimationUtils.loadAnimation(getContext(),R.anim.rotate_open_anim);
+        rotateBackward= AnimationUtils.loadAnimation(getContext(),R.anim.rotate_close_anim);
 
-        registerButton.setOnClickListener(new View.OnClickListener() {
+        mainbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                animatefab();
+
+            }
+        });
+
+
+        registerbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(getContext(),RegistrationActivity.class);
                 startActivity(i);
+            }
+        });
+
+        logoutbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FirebaseAuth.getInstance().signOut();
+                startActivity(new Intent(getContext(),MainActivity.class));
             }
         });
 
@@ -79,20 +109,25 @@ public class HomeFragment extends Fragment {
 
         adapter = new CustomRow(getContext(), arrayList);
         listview.setAdapter(adapter);
-
+        simpleProgressBar.setVisibility(View.VISIBLE);
 
         //arrayList.add(new Complaint("123","this is title","akhil","19bce1564","ragging","rahul","registered"));
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(!arrayList.isEmpty()){
+                        arrayList.clear();
+                    }
                 for(DataSnapshot dataSnapshot:snapshot.getChildren()){
                     Complaint complaint=dataSnapshot.getValue(Complaint.class);
+
                     if(complaint.getComplaintFrom().getEmail().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())){
                         arrayList.add(complaint);
                     }
 
                     adapter.notifyDataSetChanged();
                     listview.requestLayout();
+                    simpleProgressBar.setVisibility(View.INVISIBLE);
 
                 }
 
@@ -119,6 +154,25 @@ public class HomeFragment extends Fragment {
 
 
     }
+    private void animatefab(){
+        if (isOpen){
+            mainbutton.startAnimation(rotateForward);
+            registerbutton.startAnimation(fabClose);
+            logoutbutton.startAnimation(fabClose);
+            registerbutton.setClickable(false);
+            logoutbutton.setClickable(false);
+            isOpen=false;
+        }
+        else{
+            mainbutton.startAnimation(rotateBackward);
+            registerbutton.startAnimation(fabOpen);
+            logoutbutton.startAnimation(fabOpen);
+            registerbutton.setClickable(true);
+            logoutbutton.setClickable(true);
+            isOpen=true;
+        }
+    }
+
 
 
 }
